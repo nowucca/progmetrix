@@ -1,0 +1,111 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+      <groupId>com.nowucca.progmetrix</groupId>
+      <artifactId>progmetrix</artifactId>
+      <version>develop-SNAPSHOT</version>
+  </parent>
+
+
+  <groupId>com.nowucca.progmetrix</groupId>
+  <artifactId>com.nowucca.progmetrix.scrapers</artifactId>
+  <version>develop-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>com.nowucca.progmetrix.core</name>
+  <url>https://github.com/nowucca/progmetrix.git</url>
+  <description>progmetrix Core</description>
+  <scm>
+    <connection>scm:git:${project.scm.url}</connection>
+    <developerConnection>scm:git:${project.scm.url}</developerConnection>
+    <url>git@github.com:nowucca/progmetrix.git</url>
+  </scm>
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+
+  <dependencies>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.7</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+  <plugins>
+	<plugin>
+    <groupId>com.github.klieber</groupId>
+    <artifactId>phantomjs-maven-plugin</artifactId>
+    <executions>
+      <execution>
+        <goals>
+          <goal>install</goal>
+        </goals>
+      </execution>
+    </executions>
+    <configuration>
+      <version>2.0.0</version>
+    </configuration>
+  </plugin>
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>exec-maven-plugin</artifactId>
+  <executions>
+    <execution>
+      <id>casperjs-install</id>
+      <phase>pre-integration-test</phase>
+      <goals>
+        <goal>exec</goal>
+      </goals>
+      <configuration>
+        <executable>git</executable>
+        <arguments>
+          <argument>clone</argument>
+          <argument>--depth=1</argument>
+          <argument>https://github.com/n1k0/casperjs.git</argument>
+          <argument>${project.build.directory}/casperjs</argument>
+        </arguments>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+<plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>exec-maven-plugin</artifactId>
+  <executions>
+    <execution>
+      <id>casperjs-usforex</id>
+      <phase>integration-test</phase>
+      <goals>
+        <goal>exec</goal>
+      </goals>
+      <configuration>
+        <executable>${project.build.directory}/casperjs/bin/casperjs</executable>
+        <workingDirectory>${basedir}</workingDirectory>
+        <arguments>
+          <argument>--verbose</argument>
+          <argument>--no-colors</argument>
+          <argument>--concise</argument>
+          <argument>${basedir}/src/test/resources/usforex-casper.js</argument>
+        </arguments>
+        <environmentVariables>
+          <PHANTOMJS_EXECUTABLE>${phantomjs.binary}</PHANTOMJS_EXECUTABLE>
+        </environmentVariables>
+      </configuration>
+    </execution>
+
+  </executions>
+</plugin>
+  </plugins>
+  </build>
+
+</project>
